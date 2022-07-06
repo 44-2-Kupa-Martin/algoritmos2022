@@ -1,6 +1,6 @@
 #define N 10
 #include <stdio.h>
-//these functions will only accept int (*)[10]. Passing, for example, a 11x11 matrix will result in a compiler error.
+//these functions will only accept int (*)[10]. For instance, passing a 11x11 matrix will result in a compiler error.
 void leer_matriz(int A[N][N], int filas, int columnas);
 void escribir_matriz(int A[N][N], int filas, int columnas);
 void multiplicar(int A[N][N], int B[N][N], int C[N][N], int m, int n, int p);

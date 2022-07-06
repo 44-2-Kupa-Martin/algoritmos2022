@@ -28,13 +28,13 @@ void priv_youLost(Match *);
 // Main
 int main(int argc, char const *argv[])
 {
-    Match *currentMatch= makeMatch();
+    Match *ptr_currentMatch= makeMatch();
     bool done= false;
     while (!done)
     {
-        done= nextTurn(currentMatch);
+        done= nextTurn(ptr_currentMatch);
     }
-    freeMatch(currentMatch);
+    freeMatch(ptr_currentMatch);
     return 0;
 }
 //
@@ -74,12 +74,12 @@ void freeMatch(Match *m) {
     free(m);
     return;
 }
-bool nextTurn(Match *currentMatch) {
-    if (currentMatch->mistakes == 10) {
-        priv_youLost(currentMatch);
+bool nextTurn(Match *ptr_currentMatch) {
+    if (ptr_currentMatch->mistakes == 10) {
+        priv_youLost(ptr_currentMatch);
         return 1;
     }
-    priv_displayState(currentMatch);
+    priv_displayState(ptr_currentMatch);
     printf("Make a guess:\n");
     label_tryAgain: ;
     char guess[65535]= {0};
@@ -89,9 +89,9 @@ bool nextTurn(Match *currentMatch) {
         //letter guess
         char letterGuess= tolower(guess[0]);
         bool valid= true;
-        for (size_t i = 0; i < currentMatch->guessedLettersCounter; i++)
+        for (size_t i = 0; i < ptr_currentMatch->guessedLettersCounter; i++)
         {
-            if (letterGuess == currentMatch->guessedLetters[i])
+            if (letterGuess == ptr_currentMatch->guessedLetters[i])
             {
                 valid= false;
                 break;
@@ -101,60 +101,60 @@ bool nextTurn(Match *currentMatch) {
             printf("You already made that guess, try again\n");
             goto label_tryAgain;
         }
-        currentMatch->guessedLetters[currentMatch->guessedLettersCounter++]= letterGuess;
+        ptr_currentMatch->guessedLetters[ptr_currentMatch->guessedLettersCounter++]= letterGuess;
         bool guessNotInWord= true;
-        for (size_t i = 0; i < currentMatch->wordLength; i++)
+        for (size_t i = 0; i < ptr_currentMatch->wordLength; i++)
         {
-            if (currentMatch->word[i] == letterGuess) {
-                currentMatch->currentState[i]= letterGuess;
+            if (ptr_currentMatch->word[i] == letterGuess) {
+                ptr_currentMatch->currentState[i]= letterGuess;
                 guessNotInWord= false;
             }
         }
-        if (guessNotInWord) currentMatch->mistakes++;
+        if (guessNotInWord) ptr_currentMatch->mistakes++;
     } else {
-        bool sameWord= strcmp(currentMatch->word, guess) == 0 ? true : false;
+        bool sameWord= strcmp(ptr_currentMatch->word, guess) == 0 ? true : false;
         if (sameWord)
         {
-            priv_youWon(currentMatch);
+            priv_youWon(ptr_currentMatch);
             return 1;
         } else {
-            currentMatch->mistakes++;
+            ptr_currentMatch->mistakes++;
             return 0;
         }
     }
     //win condition
-    if (strcmp(currentMatch->word, currentMatch->currentState) == 0) {
-        priv_youWon(currentMatch);
+    if (strcmp(ptr_currentMatch->word, ptr_currentMatch->currentState) == 0) {
+        priv_youWon(ptr_currentMatch);
         return 1;
     }
     return 0;
 }
-void priv_displayState(Match *currentMatch) {
+void priv_displayState(Match *ptr_currentMatch) {
     system("cls");
-    for (size_t i = 0; i < currentMatch->wordLength; i++)
+    for (size_t i = 0; i < ptr_currentMatch->wordLength; i++)
     {
-        putchar(currentMatch->currentState[i]);
+        putchar(ptr_currentMatch->currentState[i]);
         putchar(' ');
     }
     putchar('\n');
-    printf("Mistakes: %u\n", currentMatch->mistakes);
+    printf("Mistakes: %u\n", ptr_currentMatch->mistakes);
     printf("Guessed letters: ");
-    for (size_t i = 0; i < currentMatch->guessedLettersCounter; i++)
+    for (size_t i = 0; i < ptr_currentMatch->guessedLettersCounter; i++)
     {
-        putchar(currentMatch->guessedLetters[i]);
+        putchar(ptr_currentMatch->guessedLetters[i]);
         putchar(' ');
     }
     putchar('\n');
     return;
 }
-void priv_youWon(Match *currentMatch) {
+void priv_youWon(Match *ptr_currentMatch) {
     system("cls");
-    printf("You Won! The word was %s\n", currentMatch->word);
+    printf("You Won! The word was %s\n", ptr_currentMatch->word);
     return;
 }
-void priv_youLost(Match *currentMatch) {
+void priv_youLost(Match *ptr_currentMatch) {
     system("cls");
-    printf("You ran out of attempts. The word was %s\n", currentMatch->word);
+    printf("You ran out of attempts. The word was %s\n", ptr_currentMatch->word);
     return;
 }
 //
