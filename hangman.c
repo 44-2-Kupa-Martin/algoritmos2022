@@ -80,18 +80,14 @@ bool nextTurn(Match *currentMatch) {
         return 1;
     }
     priv_displayState(currentMatch);
-    printf("Make a guess:\n\t1. Guess a letter\n\t2. Guess a word\n");
-    unsigned choice;
-    label_choice:
-    scanf("%u", &choice);
+    printf("Make a guess:\n");
+    label_tryAgain: ;
+    char guess[65535]= {0};
+    scanf("%65534s", guess);
     while (getchar() != '\n');
-    switch (choice) {
-    case 1: {
+    if (strlen(guess) == 1) {
         //letter guess
-        printf("Guess a letter\n");
-        label_tryAgain: ;
-        char letterGuess= tolower(getchar());
-        while (getchar() != '\n');
+        char letterGuess= tolower(guess[0]);
         bool valid= true;
         for (size_t i = 0; i < currentMatch->guessedLettersCounter; i++)
         {
@@ -115,13 +111,8 @@ bool nextTurn(Match *currentMatch) {
             }
         }
         if (guessNotInWord) currentMatch->mistakes++;
-        break;
-    }
-    case 2: {
-        char wordGuess[65535]= {0};
-        printf("Guess a word\n");
-        scanf("%65534s", wordGuess);
-        bool sameWord= strcmp(currentMatch->word, wordGuess) == 0 ? true : false;
+    } else {
+        bool sameWord= strcmp(currentMatch->word, guess) == 0 ? true : false;
         if (sameWord)
         {
             priv_youWon(currentMatch);
@@ -130,11 +121,6 @@ bool nextTurn(Match *currentMatch) {
             currentMatch->mistakes++;
             return 0;
         }
-        break;
-    }
-    default:
-        printf("Invalid choice, try again\n");
-        goto label_choice;
     }
     //win condition
     if (strcmp(currentMatch->word, currentMatch->currentState) == 0) {
