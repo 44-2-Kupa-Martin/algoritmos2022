@@ -100,7 +100,7 @@ int main(int argc, char const *argv[])
                     case 1: {
                         double matrixA[2][2];
                         promptNumbers(2, 2, matrixA);
-                        determinant= determinantOf2x2(matrixA);
+                        determinant= determinantOf2x2(&matrixA);
                         break;
                     }
                     case 2: {
