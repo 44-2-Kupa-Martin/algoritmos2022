@@ -1,3 +1,4 @@
+#define FLUSH_INPUT() while (getchar() != '\n')
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -5,7 +6,6 @@
 // https://stackoverflow.com/questions/2828648/how-to-pass-a-multidimensional-array-to-a-function-in-c-and-c
 
 // Function Prototypes
-void flushInput(void);
 void printMatrix(size_t, size_t, double[][*]);
 void promptNumbers(size_t, size_t, double[][*]);
 double (*sumOfMatrices(size_t, size_t, double[][*], double[][*]))[];
@@ -24,14 +24,16 @@ int main(int argc, char const *argv[])
         unsigned choice;
         printf("What do you want to do?\n\t1. Sum\n\t2. Product\n\t3. Transpose\n\t4. Determinant\n\t5. Exit\n");
         scanf("%u", &choice);
-        flushInput();
+        FLUSH_INPUT();
         switch (choice) {
             case 1: {
                 size_t m, n, l, p;
                 printf("Input the dimensions of the first matrix\n");
                 scanf("%zu %zu", &m, &n);
+                FLUSH_INPUT();
                 printf("Input the dimensions of the second matrix\n");
                 scanf("%zu %zu", &l, &p);
+                FLUSH_INPUT();
                 bool sameDimensions= (m == l) && (n == p); 
                 if (!sameDimensions) {
                     printf("In order to add matrices, they must have the same dimensions\n");
@@ -54,8 +56,10 @@ int main(int argc, char const *argv[])
                 size_t m, n, l, p;
                 printf("Input the dimensions of the first matrix\n");
                 scanf("%zu %zu", &m, &n);
+                FLUSH_INPUT();
                 printf("Input the dimensions of the second matrix\n");
                 scanf("%zu %zu", &l, &p);
+                FLUSH_INPUT();
                 if (n != l) {
                     printf("In order to multiply matrices, the first matrix's columns must match the second matrix's rows\n");
                     break;
@@ -77,6 +81,7 @@ int main(int argc, char const *argv[])
                 size_t m, n;
                 printf("Input the dimensions of the matrix\n");
                 scanf("%zu %zu", &m, &n);
+                FLUSH_INPUT();
                 double matrix[m][n];
                 promptNumbers(m, n, matrix);
                 double (*transposedMatrix)[m]= transposeMatrix(m, n, matrix);
@@ -89,7 +94,7 @@ int main(int argc, char const *argv[])
                 printf("What dimensions?\n\t1. 2x2\n\t2. 3x3\n\t3. Go back\n");
                 label_detChoice:
                 scanf("%u", &detChoice);
-                flushInput();
+                FLUSH_INPUT();
                 double determinant;
                 switch (detChoice) {
                     case 1: {
@@ -128,11 +133,6 @@ int main(int argc, char const *argv[])
 //
 
 // Function Definitions
-
-void flushInput(void) {
-    while (getchar() != '\n');
-    return;
-}
 
 /*
 || \Objective:
@@ -173,6 +173,7 @@ void promptNumbers(size_t rows, size_t columns, double matrix[][columns]) {
         {
             printf("Input the number in the %zuth row, %zuth column\n", i+1, j+1);
             scanf("%lf", &matrix[i][j]);
+            FLUSH_INPUT();
         }
     }
     return;
