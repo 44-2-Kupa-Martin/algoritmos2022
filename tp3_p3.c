@@ -1,74 +1,139 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 // https://stackoverflow.com/questions/6567742/passing-an-array-as-an-argument-to-a-function-in-c
 // https://stackoverflow.com/questions/2828648/how-to-pass-a-multidimensional-array-to-a-function-in-c-and-c
 
 // Function Prototypes
+void flushInput(void);
 void printMatrix(size_t, size_t, double[][*]);
 void promptNumbers(size_t, size_t, double[][*]);
 double (*sumOfMatrices(size_t, size_t, double[][*], double[][*]))[];
 double (*productOfMatrices(size_t, size_t, size_t, double[][*], double[][*]))[];
-double (*transposedMatrix(size_t, size_t, double[][*]))[];
+double (*transposeMatrix(size_t, size_t, double[][*]))[];
 double determinantOf3x3(double (*)[3][3]);
+void determinantOf2x2(void);
 //
 
 // Main
 int main(int argc, char const *argv[])
 {
-    size_t m, n, l, p;
-    printf("Input the dimensions of the first matrix\n");
-    scanf("%zu %zu", &m, &n);
-    printf("Input the dimensions of the second matrix\n");
-    scanf("%zu %zu", &l, &p);
-    double matrixA[m][n];
-    double matrixB[l][p];
-    printf("Input the numbers in the first matrix\n");
-    promptNumbers(m, n, matrixA);
-    printf("Input the numbers in the second matrix\n");
-    promptNumbers(l, p, matrixB);
-    if (m==l && n==p)
-    {
-        double (*sumResult)[n]= sumOfMatrices(m, n, matrixA, matrixB);
-        printf("\n");
-        printMatrix(m, n, sumResult);
-        printf("\n");
-        free(sumResult);
-    } else {
-        printf("In order to add matrices, they must have the same dimensions\n");
+    bool done= false;
+    while (!done) {
+        label_menu: ;
+        unsigned choice;
+        printf("What do you want to do?\n\t1. Sum\n\t2. Product\n\t3. Transpose\n\t4. Determinant\n\t5. Exit\n");
+        scanf("%u", &choice);
+        flushInput();
+        switch (choice) {
+            case 1: {
+                size_t m, n, l, p;
+                printf("Input the dimensions of the first matrix\n");
+                scanf("%zu %zu", &m, &n);
+                printf("Input the dimensions of the second matrix\n");
+                scanf("%zu %zu", &l, &p);
+                bool sameDimensions= (m == l) && (n == p); 
+                if (!sameDimensions) {
+                    printf("In order to add matrices, they must have the same dimensions\n");
+                    break;
+                }
+                double matrixA[m][n];
+                double matrixB[l][p];
+                printf("Input the numbers in the first matrix\n");
+                promptNumbers(m, n, matrixA);
+                printf("Input the numbers in the second matrix\n");
+                promptNumbers(l, p, matrixB);
+                double (*sumResult)[n]= sumOfMatrices(m, n, matrixA, matrixB);
+                printf("\n");
+                printMatrix(m, n, sumResult);
+                printf("\n");
+                free(sumResult);
+                break;
+            }
+            case 2: {
+                size_t m, n, l, p;
+                printf("Input the dimensions of the first matrix\n");
+                scanf("%zu %zu", &m, &n);
+                printf("Input the dimensions of the second matrix\n");
+                scanf("%zu %zu", &l, &p);
+                if (n != l) {
+                    printf("In order to multiply matrices, the first matrix's columns must match the second matrix's rows\n");
+                    break;
+                }
+                double matrixA[m][n];
+                double matrixB[l][p];
+                printf("Input the numbers in the first matrix\n");
+                promptNumbers(m, n, matrixA);
+                printf("Input the numbers in the second matrix\n");
+                promptNumbers(l, p, matrixB);
+                double (*productResult)[p]= productOfMatrices(m, n, p, matrixA, matrixB);
+                printf("\n");
+                printMatrix(m, p, productResult);
+                printf("\n");
+                free(productResult);
+                break;
+            }
+            case 3: {
+                size_t m, n;
+                printf("Input the dimensions of the matrix\n");
+                scanf("%zu %zu", &m, &n);
+                double matrix[m][n];
+                promptNumbers(m, n, matrix);
+                double (*transposedMatrix)[m]= transposeMatrix(m, n, matrix);
+                printMatrix(n, m, transposedMatrix);
+                free(transposedMatrix);
+                break;
+            }
+            case 4: {
+                unsigned detChoice;
+                printf("What dimensions?\n\t1. 2x2\n\t2. 3x3\n\t3. Go back\n");
+                label_detChoice:
+                scanf("%u", &detChoice);
+                flushInput();
+                double determinant;
+                switch (detChoice) {
+                    case 1: {
+                        determinantOf2x2();
+                        break;
+                    }
+                    case 2: {
+                        double matrixA[3][3];
+                        promptNumbers(3, 3, matrixA);
+                        determinant= determinantOf3x3(&matrixA);
+                        break;
+                    }
+                    case 3: {
+                        goto label_menu;
+                    }
+                    default: {
+                        printf("Invalid input try again\n");
+                        goto label_detChoice;
+                    }
+                }
+                printf("Determinant: %lf\n", determinant);
+                break;
+            }
+            case 5: {
+                done= true;
+                break;
+            }
+            default: {
+                printf("Invalid input try again\n");
+                goto label_menu;
+            }
+        }
     }
-
-    if (n == l)
-    {
-        double (*productResult)[p]= productOfMatrices(m, n, p, matrixA, matrixB);
-        printf("\n");
-        printMatrix(m, p, productResult);
-        printf("\n");
-        free(productResult);
-    } else {
-        printf("In order to multiply matrices, they first matrix's columns must match the second matrix's rows\n");
-    }
-
-    if (m == 3 && n == 3)
-    {
-        printf("First matrix's determinant: %lf\n", determinantOf3x3(&matrixA));
-    }
-    
-    if (l == 3 && p == 3)
-    {
-        printf("Second matrix's determinant: %lf\n", determinantOf3x3(&matrixB));
-    }
-    double (*transposedMatrixA)[m]= transposedMatrix(m, n, matrixA);
-    printMatrix(n, m, transposedMatrixA);
-    free(transposedMatrixA);
-    printf("\n");
-    double (*transposedMatrixB)[l]= transposedMatrix(l, p, matrixB);
-    printMatrix(p, l, transposedMatrixB);
-    free(transposedMatrixB);
     return 0;
 }
 //
 
 // Function Definitions
+
+void flushInput(void) {
+    while (getchar() != '\n');
+    return;
+}
+
 /*
 || \Objective:
 ||     This function prints the values of a 2d matrix of doubles
@@ -179,7 +244,7 @@ double (*productOfMatrices(size_t m, size_t n, size_t p, double matrixA[][n], do
 || \Return:
 ||     This function returns a pointer to a dynamically allocated 2d matrix of doubles, whose rows equal the arguments' matrix columns, its columns equal the arguments' matrix rows, and contains the result of the operation. The pointer must be freed.
 */
-double (*transposedMatrix(size_t rows, size_t columns, double matrix[][columns]))[] {
+double (*transposeMatrix(size_t rows, size_t columns, double matrix[][columns]))[] {
     double (*results)[rows]= malloc(columns * sizeof *results);
     for (size_t i = 0; i < columns; i++)
     {
@@ -205,5 +270,11 @@ double determinantOf3x3(double (*ptr_cubeMatrix)[3][3]) {
             - cubeMatrix[0][1]*(cubeMatrix[1][0]*cubeMatrix[2][2] - cubeMatrix[1][2]*cubeMatrix[2][0])
             + cubeMatrix[0][2]*(cubeMatrix[1][0]*cubeMatrix[2][1] - cubeMatrix[1][1]*cubeMatrix[2][0])
     ;
+}
+
+/*
+*/
+void determinantOf2x2(void) {
+    return;
 }
 //
