@@ -12,7 +12,7 @@ double (*sumOfMatrices(size_t, size_t, double[][*], double[][*]))[];
 double (*productOfMatrices(size_t, size_t, size_t, double[][*], double[][*]))[];
 double (*transposeMatrix(size_t, size_t, double[][*]))[];
 double determinantOf3x3(double (*)[3][3]);
-void determinantOf2x2(void);
+double determinantOf2x2(double (*)[2][2]);
 //
 
 // Main
@@ -98,7 +98,9 @@ int main(int argc, char const *argv[])
                 double determinant;
                 switch (detChoice) {
                     case 1: {
-                        determinantOf2x2();
+                        double matrixA[2][2];
+                        promptNumbers(2, 2, matrixA);
+                        determinant= determinantOf2x2(matrixA);
                         break;
                     }
                     case 2: {
@@ -261,21 +263,28 @@ double (*transposeMatrix(size_t rows, size_t columns, double matrix[][columns]))
 || \Objective:
 ||     This function computes the determinant of a 3x3 matrix of doubles.
 || \Params:
-||     ptr_cubeMatrix: A pointer to a 3x3 matrix of doubles. (*)[3][3] is used instead of (*)[3] (i.e the decay of double[][3]) in order to enforce a 3x3 array.
+||     ptr_matrix: A pointer to a 3x3 matrix of doubles. (*)[3][3] is used instead of (*)[3] (i.e the decay of double[][3]) in order to enforce a 3x3 array.
 || \Return:
 ||     The determinant of the matrix as a double.
 */
-double determinantOf3x3(double (*ptr_cubeMatrix)[3][3]) {
-    double (*cubeMatrix)[3]= *ptr_cubeMatrix;
-    return    cubeMatrix[0][0]*(cubeMatrix[1][1]*cubeMatrix[2][2] - cubeMatrix[1][2]*cubeMatrix[2][1])
-            - cubeMatrix[0][1]*(cubeMatrix[1][0]*cubeMatrix[2][2] - cubeMatrix[1][2]*cubeMatrix[2][0])
-            + cubeMatrix[0][2]*(cubeMatrix[1][0]*cubeMatrix[2][1] - cubeMatrix[1][1]*cubeMatrix[2][0])
+double determinantOf3x3(double (*ptr_matrix)[3][3]) {
+    double (*matrix)[3]= *ptr_matrix;
+    return    matrix[0][0]*(matrix[1][1]*matrix[2][2] - matrix[1][2]*matrix[2][1])
+            - matrix[0][1]*(matrix[1][0]*matrix[2][2] - matrix[1][2]*matrix[2][0])
+            + matrix[0][2]*(matrix[1][0]*matrix[2][1] - matrix[1][1]*matrix[2][0])
     ;
 }
 
 /*
+|| \Objective:
+||     This function computes the determinant of a 2x2 matrix of doubles.
+|| \Params:
+||     ptr_matrix: A pointer to a 2x2 matrix of doubles. (*)[2][2] is used instead of (*)[2] (i.e the decay of double[][2]) in order to enforce a 2x2 array.
+|| \Return:
+||     The determinant of the matrix as a double.
 */
-void determinantOf2x2(void) {
-    return;
+double determinantOf2x2(double (*ptr_matrix)[2][2]) {
+    double (*matrix)[2]= *ptr_matrix;
+    return matrix[0][0]*matrix[1][1]-matrix[0][1]*matrix[1][0];
 }
 //
