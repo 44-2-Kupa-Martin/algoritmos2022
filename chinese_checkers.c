@@ -8,7 +8,7 @@
 #define DOWN_RIGHT 7
 #include <stdio.h>
 #include <stdlib.h>
-void propagate(int (*ptr_board)[19][19], size_t x, size_t y, int direction, int length, void (*callback)(int *, void *), void *callbackArg) {
+void propagate(int (*ptr_board)[19][15], size_t x, size_t y, int direction, int length, void (*callback)(int *, void *), void *callbackArg) {
     int (*board)[15]= *ptr_board;
     switch (direction) {
         case UP: {
@@ -81,8 +81,8 @@ void propagate(int (*ptr_board)[19][19], size_t x, size_t y, int direction, int 
     }
     return;
 }
-void printBoard(int (*ptr_board)[19][19]) {
-    for (size_t i= 0; i < 15; i++) {
+void printBoard(int (*ptr_board)[19][15]) {
+    for (size_t i= 0; i < 19; i++) {
         for (size_t j= 0; j < 15; j++) {
             printf("%2d ", (*ptr_board)[i][j]);
         }
@@ -97,12 +97,12 @@ void setNumber(int *ptr_boardNumber, void *ptr_number) {
 int main(int argc, char const *argv[]) {
     int board[19][15]= {0};
     int red= 1, white= 2, yellow= 3, green= 4, black= 5, blue=6;//bruh
-    propagate(&board, 1, 5, DOWN, 4, &setNumber, &red);
-    propagate(&board, 8, 13, UP, 4, &setNumber, &white);
-    propagate(&board, 13, 13, DOWN, 4, &setNumber, &yellow);
-    propagate(&board, 13, 7, UP, 4, &setNumber, &green);
-    propagate(&board, 9, 1, UP_RIGHT, 4, &setNumber, &black);
-    propagate(&board, 5, 1, DOWN_RIGHT, 4, &setNumber, &blue);
+    propagate(&board, 1, 9, DOWN, 4, &setNumber, &red);//
+    propagate(&board, 8, 10, UP, 4, &setNumber, &white);//
+    propagate(&board, 9, 10, DOWN, 4, &setNumber, &yellow);//
+    propagate(&board, 16, 3, UP, 4, &setNumber, &green);//?
+    propagate(&board, 9, 2, DOWN, 4, &setNumber, &black);
+    propagate(&board, 8, 2, UP, 4, &setNumber, &blue);
     printBoard(&board);
     return 0;
 }
