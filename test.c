@@ -6,25 +6,28 @@ int main(int argc, char const *argv[])
 {
     size_t n;
     scanf("%zu", &n);
-    char *test[n];
+    char *strArr[n];
     for (size_t i = 0; i < n; i++)
     {
         char buffer[65535];
         printf("bldo labura: ");
         scanf("%65534s", buffer);
         while (getchar() != '\n');
-        test[i]= malloc(sizeof(char) * strlen(buffer)+1);
-        strcpy(test[i], buffer);
+        strArr[i]= malloc(sizeof(char) * strlen(buffer)+1);
+        strcpy(strArr[i], buffer);
     }
     for (size_t i = 0; i < n; i++)
     {
-        free(test[i]);
+        printf("%s", strArr[i]);
+        free(strArr[i]);
     }
-    label_menu:
-    n= 1;
-    char a[]= {'a', 'b', '\0'};
-    char *j= (&a[1])+2;
-    *j= 'o';
-    printf("%s %s", test, a);
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n-i; j++) {
+            if (strcmp(tolower(strArr[i]), tolower(strArr[j])) < 0) {
+                
+            }
+        }
+    }
+    
     return 0;
 }
